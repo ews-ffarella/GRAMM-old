@@ -1667,5 +1667,56 @@ namespace GRAMM_2001
         ///Calculation of solar radiation
         ///</summary>
         public static RadiationCalculation RadiationModel;
+
+        ///<summary>
+        /// Flag set when probe points are set (file TURBIN.dat)
+        ///</summary>
+        public static Boolean tkeiniexist;
+
+        ///<summary>
+        /// k-ε Cmu
+        ///</summary>
+        public static double CMU = 0.09;
+
+        ///<summary>
+        /// k-ε Cε1
+        ///</summary>
+        public static double CEPSILON1 = 1.44;
+
+        ///<summary>
+        /// k-ε Cε2
+        ///</summary>
+        public static double CEPSILON2 = 1.92;
+
+        ///<summary>
+        /// Flag set when probe points are set (file probes_GRAMM.dat)
+        ///</summary>
+        public static Boolean probesexist;
+
+        ///<summary>
+        ///Index in x-direction of probe points
+        ///</summary>
+        public static List<int> inprobe = new List<int>();
+        ///<summary>
+        ///Index in y-direction of probe points
+        ///</summary>
+        public static List<int> jnprobe = new List<int>();
+        ///<summary>
+        ///Index in z-direction of probe points
+        ///</summary>
+        public static List<int> knprobe = new List<int>();
+        ///<summary>
+        ///x-coordinate of probe points
+        ///</summary>
+        public static List<double> Xprobe = new List<double>();
+        ///<summary>
+        ///y-coordinate of probe points
+        ///</summary>
+        public static List<double> Yprobe = new List<double>();
+        ///<summary>
+        ///z-coordinate of probe points
+        ///</summary>
+        public static List<double> Zprobe = new List<double>();
+
     }
 }

@@ -135,6 +135,9 @@ Console.WriteLine("| .Net Core Version |");
             //OPEN THE MAIN CONTROL FILE "IIN.dat"
             Read_IIN_Dat();
 
+            //read k-epsilon constant
+            Read_TURB_Dat();
+
             //When using ERA5 data GRAMM automatically starts with a number for the weather situation based on the existing *wnd files
             if (ISTAT >= 2)
             {
@@ -235,6 +238,9 @@ Console.WriteLine("| .Net Core Version |");
             //INQUIRE IF RECEPTOR POINTS ARE SET
             Read_Receptor_Dat();
 
+            //INQUIRE IF PROBE POINTS ARE SET
+            Read_Probes_Dat();
+
             //Analyze_Topography(); // find U valleys and bassins
 
             Relaxv_ori = RELAXV;
@@ -302,6 +308,10 @@ Console.WriteLine("| .Net Core Version |");
             {
                 MASSOURCE[i] = 0;
             }
+
+
+            // Create File ${IWETTER}.probes.dat
+            initProbes();
 
             //START OF THE INTEGRATION LOOP
             while (REALTIME < TLIMIT)

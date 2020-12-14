@@ -24,7 +24,11 @@ namespace GRAMM_2001
             double VINIT = Program.V[1][1][NK];
 
             //factor used to initialize turbulent kinetic energy
-            double TURBIN = 0.01;
+            // double TURBIN = 0.01;
+            double TURBIN = 0.01; // 10%
+            double DISSIN = 0.0001;
+
+
             double TEINIT = 0;
 
             //turbulent Prandtl-number
@@ -44,6 +48,8 @@ namespace GRAMM_2001
                 VISINIT = Program.VISEL;
 
             //computing specific humidity from relative humidity
+
+            bool safe = true;
 
             Parallel.For(1, NI + 1, Program.pOptions, i =>
             {
@@ -120,12 +126,21 @@ namespace GRAMM_2001
                         TN_L[k] = T_L[k];
 
                         //turbulent kinetic energy
-                        TE_L[k] = 0.01;
-                        TEN_L[k] = 0.01;
+                        if (safe)
+                        {
+                            TE_L[k] = 0.01;
+                            TEN_L[k] = 0.01;
+                        }
+                        else
+                        {
+                            TE_L[k] = TEINIT;
+                            TEN_L[k] = TEINIT;
+
+                        }
 
                         //dissipation
-                        DISS_L[k] = 0.0001F;
-                        DISSN_L[k] = 0.0001F;
+                        DISS_L[k] = DISSIN;
+                        DISSN_L[k] = DISSIN;
 
                         //turbulent eddy viscosity
                         VISH_L[k] = VISINIT;
@@ -792,6 +807,43 @@ namespace GRAMM_2001
                     }
                 });
             }
+
+
+            // Initialize k / epsilon 
+
+            // Parallel.For(1, NI + 1, Program.pOptions, i =>
+            // {
+            //     for (int j = 1; j <= NJ; j++)
+            //     {
+            //         double ustart = Program.UST[i][j];
+            //         double ah = Program.AH[i][j];
+            //         double z0 = Program.Z0[i][j];
+            //         double[] TE_L = Program.TE[i][j];
+            //         double[] TN_L = Program.TN[i][j];
+            //         double[] TEN_L = Program.TEN[i][j];
+            //         double[] DISS_L = Program.DISS[i][j];
+            //         double[] DISSN_L = Program.DISSN[i][j];     
+            //         double[] VISH_L = Program.VISH[i][j];
+            //         double[] VISV_L = Program.VISV[i][j];
+            //         //turbulent kinetic energy, k(z) = ustar ** 2 / sqrt(CMU)
+            //         double tke = Math.Pow(ustart, 2) / Math.Sqrt(Program.CMU);
+            //         double u3 = Math.Pow(ustart, 3);
+            //         for (int k = 1; k <= NK; k++)
+            //         {
+            //             TE_L[k] = tke;
+            //             TEN_L[k] = tke;
+            //             //dissipation, epsilon(z) = ustar ** 3 / Kappa (z + z0)
+            //             double z = Program.ZSP[i][j][k] - ah;                        
+            //             double eps = u3 / (Program.CK * (z + z0));
+            //             DISS_L[k] = eps;
+            //             DISSN_L[k] = eps;
+            //             //turbulent eddy viscosity
+            //             VISH_L[k] = VISINIT;
+            //             VISV_L[k] = VISINIT;
+            //         }
+            //     }
+            // });
+
 
             Int32 IZELL = 0;
             double ARSUM = 0;

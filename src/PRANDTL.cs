@@ -29,9 +29,9 @@ namespace GRAMM_2001
                   {
                       for (int j = 2; j <= NJ_P - 1; j++)
                       {
-                      //if (Program.GLOBRAD[i][j] > 150) Program.OL[i][j] = -20; //ACHTUNG!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                          //if (Program.GLOBRAD[i][j] > 150) Program.OL[i][j] = -20; //ACHTUNG!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-                      int k = 1;
+                          int k = 1;
                           double ANUE = Program.VISEL / Program.RHO[i][j][k];
                           double Z1 = Program.ZSP[i][j][k] - Program.AH[i][j];
                           double ZETA = Math.Max(Z1 - Program.Z0[i][j], 0.1) / Program.OL[i][j];
@@ -39,11 +39,11 @@ namespace GRAMM_2001
                           double PHIM = 0;
                           double PHIH = 0;
 
-                      //flux profile relationships for stable...
-                      double PSIM = -4.7 * ZETA;
+                          //flux profile relationships for stable...
+                          double PSIM = -4.7 * ZETA;
                           double PSIH = -4.7 * ZETA;
-                      //and convective conditions
-                      if (ZETA <= 0)
+                          //and convective conditions
+                          if (ZETA <= 0)
                           {
                               PHIM = Math.Pow(1 - 16 * ZETA, 0.25);
                               PHIH = Pow2(PHIM);
@@ -51,8 +51,8 @@ namespace GRAMM_2001
                               PSIH = 2 * Math.Log(0.5F + 0.5F * Math.Pow(PHIH, -1));
                           }
 
-                      //computation of friction velocity and temperature scale
-                      double VP = Math.Sqrt(Pow2(Program.U[i][j][k]) + Pow2(Program.V[i][j][k]) + Pow2(Program.W[i][j][k]));
+                          //computation of friction velocity and temperature scale
+                          double VP = Math.Sqrt(Pow2(Program.U[i][j][k]) + Pow2(Program.V[i][j][k]) + Pow2(Program.W[i][j][k]));
 
                           Program.UST[i][j] = Program.CK * VP / (Math.Log(Z1 / Program.Z0[i][j]) - PSIM);
 
@@ -64,15 +64,15 @@ namespace GRAMM_2001
                                                      - Program.TB[i][j][2] * Program.FAC[i][j][k] * (1 + 0.00061 * Program.QUG[i][j]));
                           Program.XWQ[i][j] = (float)(Program.CK / (Math.Log(Z1 / Program.Z0[i][j]) - PSIH));
 
-                      //Obukhov length
-                      Program.OL[i][j] = (float)((Program.T[i][j][k] + Program.TBZ1) * (1 + 0.00061 * Program.QU[i][j][k]) * Pow2(Program.UST[i][j]) / (Program.CK * Program.GERD * Program.TST[i][j]));
+                          //Obukhov length
+                          Program.OL[i][j] = (float)((Program.T[i][j][k] + Program.TBZ1) * (1 + 0.00061 * Program.QU[i][j][k]) * Pow2(Program.UST[i][j]) / (Program.CK * Program.GERD * Program.TST[i][j]));
                           if (Program.OL[i][j] <= 0) Program.OL[i][j] = Math.Min(-5, Program.OL[i][j]);
                           if (Program.OL[i][j] > 0) Program.OL[i][j] = Math.Max(5, Program.OL[i][j]);
                           if (Program.OL[i][j] > 1000) Program.OL[i][j] = Math.Min(1000, Program.OL[i][j]);
                           if (Program.OL[i][j] < -1000) Program.OL[i][j] = Math.Max(-1000, Program.OL[i][j]);
 
-                      //stability class
-                      int ischnitt = 1;
+                          //stability class
+                          int ischnitt = 1;
                           int ischnitt_plus1 = 1;
                           double Uoben = 0;
                           double Voben = 0;
@@ -80,15 +80,15 @@ namespace GRAMM_2001
                           double Vunten = 0;
                           double Umittel = 0;
                           double Vmittel = 0;
-                      //compute wind speed at 10m above ground level
-                      for (int k1 = 1; k1 <= NK; k1++)
+                          //compute wind speed at 10m above ground level
+                          for (int k1 = 1; k1 <= NK; k1++)
                               if (Program.ZSP[i][j][k1] - Program.AH[i][j] >= 10)
                               {
                                   ischnitt = k1;
                                   break;
                               }
-                      //compute temperature gradient over a vertical distance of >=90m
-                      for (int k1 = 1; k1 <= NK; k1++)
+                          //compute temperature gradient over a vertical distance of >=90m
+                          for (int k1 = 1; k1 <= NK; k1++)
                               if (Program.ZSP[i][j][k1] - Program.AH[i][j] >= 90)
                               {
                                   ischnitt_plus1 = Math.Max(k1, 2);
@@ -112,8 +112,8 @@ namespace GRAMM_2001
                           }
                           double wg = Math.Sqrt(Umittel * Umittel + Vmittel * Vmittel);
 
-                      //int ischnitt_plus1 = Math.Max(ischnitt, 2);
-                      double dt = Program.TABS[i][j][ischnitt_plus1] - Program.TABS[i][j][1];
+                          //int ischnitt_plus1 = Math.Max(ischnitt, 2);
+                          double dt = Program.TABS[i][j][ischnitt_plus1] - Program.TABS[i][j][1];
 
                           if (wg <= 2)
                           {
@@ -186,12 +186,12 @@ namespace GRAMM_2001
                               RITSCH_L[k] *= DTDZ;
                               RITSCH_L[k] /= (DGDZ + 0.0000000001);
 
-                             /*
-                              if (i == Program.inrec[63] && j == Program.jnrec[63])
-                              {
-                                  Console.WriteLine(DTDZ.ToString("0.000") + " , " + k.ToString() + " , " + RITSCH_L[k].ToString("0.000") + " , " + DGDZ.ToString("0.000"));
-                              }
-                              */
+                              /*
+                               if (i == Program.inrec[63] && j == Program.jnrec[63])
+                               {
+                                   Console.WriteLine(DTDZ.ToString("0.000") + " , " + k.ToString() + " , " + RITSCH_L[k].ToString("0.000") + " , " + DGDZ.ToString("0.000"));
+                               }
+                               */
                           }
                       }
                   }

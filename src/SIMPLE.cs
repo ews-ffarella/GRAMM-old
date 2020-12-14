@@ -60,7 +60,7 @@ namespace GRAMM_2001
                 if ((NI > 10) && (NJ > 10) && (Program.ICTB)) Calctb_calculate(NI, NJ, NK);
 
                 //Solve momentum equations
-                if (Program.pOptions.MaxDegreeOfParallelism > 5) // more cores - divide the work -> try to avoid false sharing             	
+                if (Program.pOptions.MaxDegreeOfParallelism > 3) // more cores - divide the work -> try to avoid false sharing             	
                 {
                     //                	int cores = Program.pOptions.MaxDegreeOfParallelism;
                     //                	Program.pOptions.MaxDegreeOfParallelism = Convert.ToInt32(Math.Ceiling(cores / 3.0f));
@@ -198,9 +198,13 @@ namespace GRAMM_2001
                 }
                 //2.9.2019 Öt
 
+                
+
                 Program.TerminalOut++;
                 if (Program.TerminalOut >= TerminalThreshold) // if Counter is even
                 {
+                    writeProbes();
+                    
                     //output to screen
                     string LOGT = "-";
                     string LOGH = "-";

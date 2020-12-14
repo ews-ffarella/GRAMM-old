@@ -11,6 +11,7 @@
 #endregion
 
 using System;
+using System.IO;
 using System.Collections.Concurrent;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -276,7 +277,7 @@ namespace GRAMM_2001
                               for (int k = 1; k <= NK - 1; k++)
                               {
                                   if (TE_L[k] <= 0) TE_L[k] = 0;
-                                  VISV_L[k] += Program.RELAXT * (0.09 * Pow2(TEN_L[k]) / DISSN_L[k] - VISV_L[k]);
+                                  VISV_L[k] += Program.RELAXT * (Program.CMU * Pow2(TEN_L[k]) / DISSN_L[k] - VISV_L[k]);
                                   VISV_L[k] = Math.Max(Program.VISEL, VISV_L[k]);
                                   VISV_L[k] = Math.Min(50, VISV_L[k]);
                               }
@@ -469,6 +470,117 @@ namespace GRAMM_2001
                     }
                 }
             });
+        }
+
+        public static void initProbes()
+        {
+            if (Program.probesexist == true)
+            {
+                string probesFilename;
+                probesFilename = (Convert.ToString(IWETTER).PadLeft(5, '0') + ".probes.dat");
+                if (File.Exists(probesFilename) == true)
+                {
+                    try
+                    {
+                        File.Delete(probesFilename);
+                    }
+                    catch
+                    {
+                        Console.WriteLine("Failed to delete " + probesFilename);
+                    }
+                }
+                try
+                {
+                    using (StreamWriter wr = new StreamWriter(probesFilename, false))
+                    {
+                        wr.Write("#ProbesStart - N = " + Program.Xprobe.Count().ToString());
+                        wr.WriteLine();
+                        wr.Write("PROBEI X Y Z");
+                        wr.WriteLine();
+                        for (int ianz = 0; ianz < Program.Xprobe.Count(); ianz++)
+                        {
+                            wr.Write((ianz + 1).ToString() + " " + Xprobe[ianz].ToString("0.0") + " " + Yprobe[ianz].ToString("0.0") + " " + Zprobe[ianz].ToString("0.0"));
+                            wr.WriteLine();
+                        }
+                        wr.Write("#DataStart");
+                        wr.WriteLine();
+                        wr.Write("PROBEI Time U V W K U2D DIR TI INCL");
+                        wr.WriteLine();
+                    }
+                }
+                catch { }
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void writeProbes()
+        {
+            string probesFilename;
+            probesFilename = (Convert.ToString(Program.IWETTER).PadLeft(5, '0') + ".probes.dat");
+            //Computation of values at probe points
+            if (Program.probesexist == true)
+            {
+                // Console.WriteLine("  Writing " + probesFilename);
+                try
+                {
+                    using (StreamWriter wr = new StreamWriter(probesFilename, true))
+                    {
+                        for (int ianz = 0; ianz < Program.Xprobe.Count(); ianz++)
+                        {
+                            double wind_u = 0;
+                            double wind_v = 0;
+                            double wind_w = 0;
+                            double tke = 0;
+                            double z1 = 0;
+                            double u1 = 0;
+                            double v1 = 0;
+                            double w1 = 0;
+                            double t1 = 0;
+                            if (knprobe[ianz] == 1)
+                            {
+                                z1 = 0;
+                                u1 = 0;
+                                v1 = 0;
+                                t1 = 0;
+                            }
+                            else
+                            {
+                                z1 = Program.ZSP[Program.inprobe[ianz]][Program.jnprobe[ianz]][Program.knprobe[ianz] - 1] - Program.AH[Program.inprobe[ianz]][Program.jnprobe[ianz]];
+                                u1 = Program.UN[Program.inprobe[ianz]][Program.jnprobe[ianz]][Program.knprobe[ianz] - 1];
+                                v1 = Program.VN[Program.inprobe[ianz]][Program.jnprobe[ianz]][Program.knprobe[ianz] - 1];
+                                w1 = Program.WN[Program.inprobe[ianz]][Program.jnprobe[ianz]][Program.knprobe[ianz] - 1];
+                                t1 = Program.TEN[Program.inprobe[ianz]][Program.jnprobe[ianz]][Program.knprobe[ianz] - 1];
+                            }
+
+                            Linear_interpolation(z1, Program.ZSP[Program.inprobe[ianz]][Program.jnprobe[ianz]][Program.knprobe[ianz]] - Program.AH[Program.inprobe[ianz]][Program.jnprobe[ianz]], Program.Zprobe[ianz], u1, Program.UN[Program.inprobe[ianz]][Program.jnprobe[ianz]][Program.knprobe[ianz]], ref wind_u);
+                            Linear_interpolation(z1, Program.ZSP[Program.inprobe[ianz]][Program.jnprobe[ianz]][Program.knprobe[ianz]] - Program.AH[Program.inprobe[ianz]][Program.jnprobe[ianz]], Program.Zprobe[ianz], v1, Program.VN[Program.inprobe[ianz]][Program.jnprobe[ianz]][Program.knprobe[ianz]], ref wind_v);
+                            Linear_interpolation(z1, Program.ZSP[Program.inprobe[ianz]][Program.jnprobe[ianz]][Program.knprobe[ianz]] - Program.AH[Program.inprobe[ianz]][Program.jnprobe[ianz]], Program.Zprobe[ianz], w1, Program.WN[Program.inprobe[ianz]][Program.jnprobe[ianz]][Program.knprobe[ianz]], ref wind_w);
+                            Linear_interpolation(z1, Program.ZSP[Program.inprobe[ianz]][Program.jnprobe[ianz]][Program.knprobe[ianz]] - Program.AH[Program.inprobe[ianz]][Program.jnprobe[ianz]], Program.Zprobe[ianz], t1, Program.TEN[Program.inprobe[ianz]][Program.jnprobe[ianz]][Program.knprobe[ianz]], ref tke);
+
+                            double u_mag = Math.Sqrt((Math.Pow(wind_u, 2) + Math.Pow(wind_v, 2)));
+                            double incl = 57.2957795131 * Math.Atan2(wind_w, u_mag);
+                            double ti = 100.0 * Math.Sqrt(4.0 * tke / 3.0) / u_mag;
+                            wr.Write(
+                                (ianz + 1).ToString() + " " +
+                                Program.REALTIME.ToString("0.00") + " " +
+                                wind_u.ToString("0.0000") + " " +
+                                wind_v.ToString("0.0000") + " " +
+                                wind_w.ToString("0.0000") + " " +
+                                tke.ToString("0.000000") + " " +
+                                u_mag.ToString("0.000") + " " +
+                                Program.winkel(wind_u, wind_v).ToString("0.00") + " " +
+                                ti.ToString("0.000") + " " +
+                                incl.ToString("0.000")
+                            );
+                            wr.WriteLine();
+                        }
+                    }
+                }
+                catch
+                {
+                    Console.WriteLine("  Failed to write " + probesFilename);
+                }
+            }
         }
 
         //linear interpolation between two points

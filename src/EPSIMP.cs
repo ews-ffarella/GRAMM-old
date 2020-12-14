@@ -30,6 +30,9 @@ namespace GRAMM_2001
                 double[] PIM = new double[NK + 1];
                 double[] QIM = new double[NK + 1];
                 double help;
+                double CMU = Program.CMU;
+                double CEPSILON1 = Program.CEPSILON1;
+                double CEPSILON2 = Program.CEPSILON2;
 
                 for (int i = range.Item1; i < range.Item2; i++)
                 {
@@ -76,7 +79,7 @@ namespace GRAMM_2001
                             double DIM = Program.AWEST_PS[i][j][k] * Program.DISSN[i - 1][j][k] + Program.ASOUTH_PS[i][j][k] * Program.DISSN[i][j - 1][k] +
                                 Program.AEAST_PS[i][j][k] * Program.DISSN[i + 1][j][k] + Program.ANORTH_PS[i][j][k] * Program.DISSN[i][j + 1][k] +
                                 Program.AP0_PS[i][j][k] * Program.DISS[i][j][k] +
-                                (Program.DISS[i][j][k] / Math.Max(Math.Abs(Program.TE[i][j][k]), 0.01) * (1.44 * PSTRESS + 0.4 * PBUOY - 1.92 * Program.DISS[i][j][k] * Program.RHO[i][j][k])) * Program.VOL[i][j][k];
+                                (Program.DISS[i][j][k] / Math.Max(Math.Abs(Program.TE[i][j][k]), 0.01) * (CEPSILON1 * PSTRESS + 0.4 * PBUOY - CEPSILON2 * Program.DISS[i][j][k] * Program.RHO[i][j][k])) * Program.VOL[i][j][k];
 
                             //Recurrence formula
                             if (k > 1)
@@ -161,7 +164,7 @@ namespace GRAMM_2001
                             double DIM = Program.AWEST_PS[i][j][k] * Program.DISSN[i - 1][j][k] + Program.ASOUTH_PS[i][j][k] * Program.DISSN[i][j - 1][k] +
                                 Program.AEAST_PS[i][j][k] * Program.DISSN[i + 1][j][k] + Program.ANORTH_PS[i][j][k] * Program.DISSN[i][j + 1][k] +
                                 Program.AP0_PS[i][j][k] * Program.DISS[i][j][k] +
-                                (Program.DISS[i][j][k] / Math.Max(Math.Abs(Program.TE[i][j][k]), 0.01) * (1.44 * PSTRESS + 0.4 * PBUOY - 1.92 * Program.DISS[i][j][k] * Program.RHO[i][j][k])) * Program.VOL[i][j][k];
+                                (Program.DISS[i][j][k] / Math.Max(Math.Abs(Program.TE[i][j][k]), 0.01) * (CEPSILON1 * PSTRESS + 0.4 * PBUOY - CEPSILON2 * Program.DISS[i][j][k] * Program.RHO[i][j][k])) * Program.VOL[i][j][k];
 
                             //Recurrence formula
                             if (k > 1)
@@ -246,7 +249,7 @@ namespace GRAMM_2001
                             double DIM = Program.AWEST_PS[i][j][k] * Program.DISSN[i - 1][j][k] + Program.ASOUTH_PS[i][j][k] * Program.DISSN[i][j - 1][k] +
                                 Program.AEAST_PS[i][j][k] * Program.DISSN[i + 1][j][k] + Program.ANORTH_PS[i][j][k] * Program.DISSN[i][j + 1][k] +
                                 Program.AP0_PS[i][j][k] * Program.DISS[i][j][k] +
-                                (Program.DISS[i][j][k] / Math.Max(Math.Abs(Program.TE[i][j][k]), 0.01) * (1.44 * PSTRESS + 0.4 * PBUOY - 1.92 * Program.DISS[i][j][k] * Program.RHO[i][j][k])) * Program.VOL[i][j][k];
+                                (Program.DISS[i][j][k] / Math.Max(Math.Abs(Program.TE[i][j][k]), 0.01) * (CEPSILON1 * PSTRESS + 0.4 * PBUOY - CEPSILON2 * Program.DISS[i][j][k] * Program.RHO[i][j][k])) * Program.VOL[i][j][k];
 
                             //Recurrence formula
                             if (k > 1)
@@ -330,7 +333,7 @@ namespace GRAMM_2001
                             double DIM = Program.AWEST_PS[i][j][k] * Program.DISSN[i - 1][j][k] + Program.ASOUTH_PS[i][j][k] * Program.DISSN[i][j - 1][k] +
                                 Program.AEAST_PS[i][j][k] * Program.DISSN[i + 1][j][k] + Program.ANORTH_PS[i][j][k] * Program.DISSN[i][j + 1][k] +
                                 Program.AP0_PS[i][j][k] * Program.DISS[i][j][k] +
-                                (Program.DISS[i][j][k] / Math.Max(Math.Abs(Program.TE[i][j][k]), 0.01) * (1.44 * PSTRESS + 0.4 * PBUOY - 1.92 * Program.DISS[i][j][k] * Program.RHO[i][j][k])) * Program.VOL[i][j][k];
+                                (Program.DISS[i][j][k] / Math.Max(Math.Abs(Program.TE[i][j][k]), 0.01) * (CEPSILON1 * PSTRESS + 0.4 * PBUOY - CEPSILON2 * Program.DISS[i][j][k] * Program.RHO[i][j][k])) * Program.VOL[i][j][k];
 
                             //Recurrence formula
                             if (k > 1)
@@ -414,7 +417,7 @@ namespace GRAMM_2001
                             double DIM = Program.AWEST_PS[i][j][k] * Program.DISSN[i - 1][j][k] + Program.ASOUTH_PS[i][j][k] * Program.DISSN[i][j - 1][k] +
                                 Program.AEAST_PS[i][j][k] * Program.DISSN[i + 1][j][k] + Program.ANORTH_PS[i][j][k] * Program.DISSN[i][j + 1][k] +
                                 Program.AP0_PS[i][j][k] * Program.DISS[i][j][k] +
-                                (Program.DISS[i][j][k] / Math.Max(Math.Abs(Program.TE[i][j][k]), 0.01) * (1.44 * PSTRESS + 0.4 * PBUOY - 1.92 * Program.DISS[i][j][k] * Program.RHO[i][j][k])) * Program.VOL[i][j][k];
+                                (Program.DISS[i][j][k] / Math.Max(Math.Abs(Program.TE[i][j][k]), 0.01) * (CEPSILON1 * PSTRESS + 0.4 * PBUOY - CEPSILON2 * Program.DISS[i][j][k] * Program.RHO[i][j][k])) * Program.VOL[i][j][k];
 
                             //Recurrence formula
                             if (k > 1)
@@ -499,7 +502,7 @@ namespace GRAMM_2001
                             double DIM = Program.AWEST_PS[i][j][k] * Program.DISSN[i - 1][j][k] + Program.ASOUTH_PS[i][j][k] * Program.DISSN[i][j - 1][k] +
                                 Program.AEAST_PS[i][j][k] * Program.DISSN[i + 1][j][k] + Program.ANORTH_PS[i][j][k] * Program.DISSN[i][j + 1][k] +
                                 Program.AP0_PS[i][j][k] * Program.DISS[i][j][k] +
-                                (Program.DISS[i][j][k] / Math.Max(Math.Abs(Program.TE[i][j][k]), 0.01) * (1.44 * PSTRESS + 0.4 * PBUOY - 1.92 * Program.DISS[i][j][k] * Program.RHO[i][j][k])) * Program.VOL[i][j][k];
+                                (Program.DISS[i][j][k] / Math.Max(Math.Abs(Program.TE[i][j][k]), 0.01) * (CEPSILON1 * PSTRESS + 0.4 * PBUOY - CEPSILON2 * Program.DISS[i][j][k] * Program.RHO[i][j][k])) * Program.VOL[i][j][k];
 
                             //Recurrence formula
                             if (k > 1)
@@ -583,7 +586,7 @@ namespace GRAMM_2001
                             double DIM = Program.AWEST_PS[i][j][k] * Program.DISSN[i - 1][j][k] + Program.ASOUTH_PS[i][j][k] * Program.DISSN[i][j - 1][k] +
                                 Program.AEAST_PS[i][j][k] * Program.DISSN[i + 1][j][k] + Program.ANORTH_PS[i][j][k] * Program.DISSN[i][j + 1][k] +
                                 Program.AP0_PS[i][j][k] * Program.DISS[i][j][k] +
-                                (Program.DISS[i][j][k] / Math.Max(Math.Abs(Program.TE[i][j][k]), 0.01) * (1.44 * PSTRESS + 0.4 * PBUOY - 1.92 * Program.DISS[i][j][k] * Program.RHO[i][j][k])) * Program.VOL[i][j][k];
+                                (Program.DISS[i][j][k] / Math.Max(Math.Abs(Program.TE[i][j][k]), 0.01) * (CEPSILON1 * PSTRESS + 0.4 * PBUOY - CEPSILON2 * Program.DISS[i][j][k] * Program.RHO[i][j][k])) * Program.VOL[i][j][k];
 
                             //Recurrence formula
                             if (k > 1)
@@ -669,7 +672,7 @@ namespace GRAMM_2001
                             double DIM = Program.AWEST_PS[i][j][k] * Program.DISSN[i - 1][j][k] + Program.ASOUTH_PS[i][j][k] * Program.DISSN[i][j - 1][k] +
                                 Program.AEAST_PS[i][j][k] * Program.DISSN[i + 1][j][k] + Program.ANORTH_PS[i][j][k] * Program.DISSN[i][j + 1][k] +
                                 Program.AP0_PS[i][j][k] * Program.DISS[i][j][k] +
-                                (Program.DISS[i][j][k] / Math.Max(Math.Abs(Program.TE[i][j][k]), 0.01) * (1.44 * PSTRESS + 0.4 * PBUOY - 1.92 * Program.DISS[i][j][k] * Program.RHO[i][j][k])) * Program.VOL[i][j][k];
+                                (Program.DISS[i][j][k] / Math.Max(Math.Abs(Program.TE[i][j][k]), 0.01) * (CEPSILON1 * PSTRESS + 0.4 * PBUOY - CEPSILON2 * Program.DISS[i][j][k] * Program.RHO[i][j][k])) * Program.VOL[i][j][k];
 
                             //Recurrence formula
                             if (k > 1)

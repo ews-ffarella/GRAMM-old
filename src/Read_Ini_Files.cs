@@ -229,7 +229,7 @@ namespace GRAMM_2001
             FW = CreateArray<double[]>(NX1, () => new double[NY1]);
             T = CreateArray<double[][]>(NX1, () => CreateArray<double[]>(NY1, () => new double[NZ1]));
             TN = CreateArray<double[][]>(NX1, () => CreateArray<double[]>(NY1, () => new double[NZ1]));
-            
+
             TBZ = CreateArray<double[][]>(NX1, () => CreateArray<double[]>(NY1, () => new double[NZ1]));
             FACTOR = CreateArray<float[][]>(NX1, () => CreateArray<float[]>(NY1, () => new float[NZ1]));
             DISS = CreateArray<double[][]>(NX1, () => CreateArray<double[]>(NY1, () => new double[NZ1]));
@@ -785,6 +785,147 @@ namespace GRAMM_2001
                 Console.WriteLine("Error when reading file 'GRAMMin.dat' - Execution stopped");
                 Environment.Exit(0);
             }
+        }
+
+        private static void Read_TURB_Dat()
+        {
+            tkeiniexist = File.Exists("TURBIN.dat");
+            if (tkeiniexist == true)
+            {
+                try
+                {
+                    using (FileStream fs = new FileStream("TURBIN.dat", FileMode.Open, FileAccess.Read, FileShare.Read))
+                    {
+                        using (StreamReader myreader = new StreamReader(fs))
+                        {
+                            string[] text = new string[10];
+                            text = myreader.ReadLine().Split(new char[] { '!', ':' });
+                            text[1] = text[1].Trim();
+                            text[1] = text[1].Replace(".", decsep);
+                            Program.CMU = Convert.ToDouble(text[1]);
+                            text = myreader.ReadLine().Split(new char[] { '!', ':' });
+                            text[1] = text[1].Trim();
+                            text[1] = text[1].Replace(".", decsep);
+                            Program.CEPSILON1 = Convert.ToDouble(text[1]);
+                            text = myreader.ReadLine().Split(new char[] { '!', ':' });
+                            text[1] = text[1].Trim();
+                            text[1] = text[1].Replace(".", decsep);
+                            Program.CEPSILON2 = Convert.ToDouble(text[1]);
+                        }
+                    }
+                }
+                catch
+                {
+                    Console.WriteLine("Failed reading 'TURBIN.dat' - Using default K-epsilon values");
+                }
+            }
+            else
+            {
+                Console.WriteLine("File 'TURBIN.dat' not found - Using default K-epsilon values");
+            }
+
+            Console.WriteLine("  K-epsilon constants: ");
+            Console.WriteLine("  Cmu:                 " + Program.CMU.ToString());
+            Console.WriteLine("  Cepsilon1:           " + Program.CEPSILON1.ToString());
+            Console.WriteLine("  Cepsilon2:           " + Program.CEPSILON2.ToString());
+        }
+
+        private static void Read_Probes_Dat()
+        {
+
+            try
+            {
+                probesexist = File.Exists("Probes_GRAMM.dat");
+                if (probesexist == true)
+                {
+                    FileStream fs = new FileStream("Probes_GRAMM.dat", FileMode.Open, FileAccess.Read, FileShare.Read);
+                    StreamReader myreader = new StreamReader(fs);
+                    try
+                    {
+
+                        Console.WriteLine("  Reading Probes_GRAMM.dat ...");
+                        string[] text = new string[10];
+                        text = myreader.ReadLine().Split(new char[] { ',', ' ' });
+                        text[0] = text[0].Trim();
+                        text[0] = text[0].Replace(".", decsep);
+                        int iprobeall = Convert.ToInt32(text[0]);
+                        int n = 0;
+
+                        while (myreader.EndOfStream == false)
+                        {
+                            text = myreader.ReadLine().Split(new char[] { ',', ' ' });
+
+                            if (text.Length > 3)
+                            {
+                                text[0] = text[0].Trim();
+                                text[0] = text[0].Replace(".", decsep);
+                                double _xprobe = Convert.ToDouble(text[1].Replace(".", decsep));
+                                double _yprobe = Convert.ToDouble(text[2].Replace(".", decsep));
+                                double _zprobe = Convert.ToDouble(text[3].Replace(".", decsep));
+                                int _inprobe = Convert.ToInt32(Math.Floor((_xprobe - IKOOA) / DDX[1]) + 1);
+                                int _jnprobe = Convert.ToInt32(Math.Floor((_yprobe - JKOOA) / DDY[1]) + 1);
+                                n++;
+
+                                if ((_inprobe >= NX) || (_inprobe <= 0))
+                                {
+                                    Console.WriteLine("  Probe nr. " + n.ToString() + " out of Domain in X - direction!");
+                                }
+                                else if ((_jnprobe >= NY) || (_jnprobe <= 0))
+                                {
+                                    Console.WriteLine("  Probe nr. " + n.ToString() + " out of Domain in Y - direction!");
+                                }
+                                else // Probe points inside model domain
+                                {
+                                    double zdummy = 0;
+                                    int _knprobe = 0;
+                                    for (int k = 1; k <= NZ; k++)
+                                    {
+                                        zdummy = ZSP[_inprobe][_jnprobe][k] - AH[_inprobe][_jnprobe];
+                                        if (zdummy > _zprobe)
+                                        {
+                                            _knprobe = k;
+                                            break;
+                                        }
+                                    }
+                                    Xprobe.Add(_xprobe);
+                                    Yprobe.Add(_yprobe);
+                                    Zprobe.Add(_zprobe);
+                                    inprobe.Add(_inprobe);
+                                    jnprobe.Add(_jnprobe);
+                                    knprobe.Add(_knprobe);
+                                }
+                            }
+                        }
+                    }
+                    catch
+                    {
+                        Console.WriteLine("Error when reading probes data from file 'Probes_GRAMM.dat' - Execution stopped - press ESC to continue");
+                        while (!(Console.KeyAvailable && Console.ReadKey(true).Key == ConsoleKey.Escape)) ;
+                        Environment.Exit(0);
+                    }
+                    myreader.Close();
+                    myreader.Dispose();
+                    fs.Dispose();
+
+                    if (Xprobe.Count == 0)
+                    {
+                        inprobe.Add(1);
+                        jnprobe.Add(1);
+                        knprobe.Add(1);
+                    }
+                }
+                else
+                {
+                    inprobe.Add(1);
+                    jnprobe.Add(1);
+                    knprobe.Add(1);
+                }
+
+            }
+            catch
+            {
+            }
+            Console.WriteLine("  Number of probe points: " + Xprobe.Count().ToString());
         }
 
     }

@@ -6,7 +6,7 @@
         {
             "label": "build",
             "type": "shell",
-            "command": "dotnet build --configuration Release",
+            "command": "dotnet build src --configuration Release",
             "group": {
                 "kind": "build",
                 "isDefault": true
@@ -16,7 +16,7 @@
         {
             "label": "build self contained exe",
             "type": "shell",
-            "command": "dotnet publish -r win10-x64 -c Release /p:PublishSingleFile=true /p:PublishTrimmed=true",
+            "command": "dotnet publish src -r win10-x64 -c Release /p:PublishSingleFile=true /p:PublishTrimmed=true",
             "group": {
                 "kind": "build",
                 "isDefault": true
